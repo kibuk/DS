@@ -1,0 +1,276 @@
+
+1.
+SELECT model, speed, hd
+FROM PC
+WHERE price<500
+
+
+2.
+SELECT distinct maker 
+FROM Product 
+WHERE type = 'Printer'
+
+
+3.
+SELECT model, ram, screen 
+FROM Laptop 
+WHERE price >1000
+
+
+4.
+SELECT * 
+FROM Printer 
+WHERE color= 'y'
+
+
+5.
+SELECT DISTINCT model, speed, hd 
+FROM PC
+WHERE Price <600  AND (cd = '12x' OR cd = '24x')
+
+
+6.
+SELECT DISTINCT Product.maker, speed
+FROM Laptop
+JOIN Product ON Laptop.model = Product.model
+WHERE hd >= 10 AND Product.type = 'Laptop'
+
+
+7. 
+SELECT DISTINCT PC.model, PC.price 
+FROM PC 
+JOIN Product ON Product.model=PC.model 
+WHERE Product.Maker = 'B'
+
+UNION SELECT DISTINCT Laptop.model, Laptop.price 
+FROM Laptop 
+JOIN Product ON Product.model=Laptop.model 
+WHERE Product.Maker = 'B' 
+
+UNION SELECT DISTINCT Printer.model, Printer.price 
+FROM Printer 
+JOIN Product ON Product.model=Printer.model 
+WHERE Product.Maker = 'B'
+
+8.
+
+
+
+9.
+SELECT DISTINCT Maker
+FROM Product
+JOIN PC ON PC.model = product.model
+WHERE PC.speed >= 450
+
+
+10. 
+SELECT model, price
+FROM Printer
+WHERE price IN (SELECT MAX(price) FROM Printer)
+
+
+11.
+SELECT AVG(speed)
+FROM PC
+
+
+12.
+SELECT AVG(speed)
+FROM Laptop
+WHERE price > 1000
+
+
+13.
+SELECT AVG(speed)
+FROM PC
+JOIN Product ON Product.model=PC.model 
+WHERE Product.Maker = 'A'
+
+
+14.
+SELECT ships.class, name, Classes.country
+FROM Ships
+JOIN Classes ON Classes.class = Ships.class
+WHERE numGuns >= 10
+
+
+15.
+SELECT DISTINCT hd
+FROM PC
+GROUP BY hd
+HAVING COUNT(hd) >= 2
+
+
+16.
+
+
+17.
+SELECT DISTINCT Product.type, Laptop.model, speed
+FROM Laptop
+JOIN Product ON Product.model = Laptop.model
+WHERE speed < ALL (SELECT speed FROM PC)
+
+
+18. ---------------
+SELECT Product.maker, price
+FROM Printer
+JOIN Product ON Product.model = Printer.model
+WHERE (color = 'y') AND (price in (SELECT MIN(price) FROM Printer))
+
+
+19.
+SELECT Product.maker, AVG(screen)
+FROM Laptop
+JOIN Product ON Product.model = Laptop.model
+GROUP BY Product.maker
+
+
+20.
+SELECT maker, COUNT(model)
+FROM product
+WHERE type = 'pc'
+GROUP BY maker
+HAVING COUNT(Product.model)>=3
+
+
+21.
+SELECT Product.maker, MAX(price)
+FROM PC
+JOIN product ON product.model = pc.model
+GROUP BY product.maker
+
+
+22. For each value of PC speed that exceeds 600 MHz, find out the average price of PCs with identical speeds.
+Result set: speed, average price.
+
+SELECT speed, AVG(price)
+FROM PC
+WHERE speed > 600
+GROUP BY speed
+
+
+23. Get the makers producing both PCs having a speed of 750 MHz or higher and laptops with a speed of 750 MHz or higher. 
+Result set: maker
+
+SELECT maker
+From product
+JOIN PC ON PC.model = product.model
+WHERE pc.speed >= 750 
+INTERSECT
+SELECT maker
+From product
+JOIN laptop ON laptop.model = product.model
+WHERE laptop.speed >= 750
+
+
+24. List the models of any type having the highest price of all products present in the database.
+
+SELECT model
+FROM (
+ SELECT model, price
+ FROM pc
+ UNION
+ SELECT model, price
+ FROM Laptop
+ UNION
+ SELECT model, price
+ FROM Printer
+) a
+WHERE price = (
+ SELECT MAX(price)
+ FROM (
+  SELECT price
+  FROM pc
+  UNION
+  SELECT price
+  FROM Laptop
+  UNION
+  SELECT price
+  FROM Printer
+  ) b
+ )
+
+
+25. Find the printer makers also producing PCs with the lowest RAM capacity and the highest processor speed of all PCs having the lowest RAM capacity. 
+Result set: maker.
+
+SELECT DISTINCT maker
+FROM product
+WHERE model IN(
+  SELECT model 
+  FROM PC
+  WHERE ram = (
+  SELECT MIN(ram)
+  FROM PC)
+AND speed = ( 
+  SELECT MAX(speed)
+  FROM pc
+  WHERE ram = (
+  SELECT MIN(ram)
+  FROM PC)))
+AND maker IN(
+  SELECT maker
+  FROM product
+  WHERE type = 'printer')
+
+
+26. 
+
+27
+SELECT pr.maker, avg(pc.hd)
+FROM product pr
+INNER JOIN pc ON pc.model = pr.model
+WHERE pr.type LIKE 'PC' AND pr.maker IN (
+SELECT maker
+FROM product
+WHERE type LIKE 'Printer'
+GROUP BY maker
+)
+GROUP BY pr.maker
+
+
+28.
+SELECT 
+COUNT(maker)
+FROM (SELECT maker 
+FROM product 
+GROUP BY maker 
+HAVING COUNT(distinct model)<=1)x
+
+29.
+
+30.
+
+
+31. 
+Select  class, country
+from classes
+where bore >= 16
+
+
+
+33. SELECT ship
+FROM outcomes
+where result ='sunk' AND battle = 'North Atlantic'
+
+
+35.
+SELECT model, type 
+FROM Product 
+WHERE model NOT LIKE '%[^0-9]%' OR lower (model) NOT LIKE '%[^a-z]%' 
+
+
+36.
+SELECT name
+FROM ships
+WHERE name in (SELECT class 
+               FROM classes)
+UNION
+SELECT ship 
+FROM outcomes 
+WHERE ship in (SELECT class 
+               FROM classes)
+
+
+
+
